@@ -1,0 +1,4 @@
+/usr/local/bin/readmapper
+/usr/local/bin/seqreader
+/usr/local/bin/seqalign
+/usr/local/bin/aligntest
