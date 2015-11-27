@@ -8,36 +8,77 @@
  * por conveniente.
  */
 FASTQReader::FASTQReader(char* filename)
+    file_(fopen(filename, "r"))
 {
-    //TODO no implementado
-    std::cout << "Error: función no implementada." << std::endl;
-    std::exit(1);
+    current = fgetc(file_);
 }
 
 FASTQReader::FASTQReader(std::string filename)
+    file_(fopen(filename.c_str(), "r"))
 {
-    //TODO no implementado
-    std::cout << "Error: función no implementada." << std::endl;
-    std::exit(1);
+    current = fgetc(file_);
 }
 
 std::string FASTQReader::getID()
 {
-    //TODO no implementado
-    std::cout << "Error: función no implementada." << std::endl;
-    std::exit(1);
+    return this->id_;
 }
 
 std::string FASTQReader::getSequence()
 {
-    //TODO no implementado
-    std::cout << "Error: función no implementada." << std::endl;
-    std::exit(1);
+    return this->sequence_;
 }
 
 bool FASTQReader::next()
 {
-    //TODO no implementado
-    std::cout << "Error: función no implementada." << std::endl;
-    std::exit(1);
+    this->id_.clear();
+    this->sequence_.clear();
+    if(accept('@'))
+    {
+        inheader=true;
+        while(acceptPrintable());
+        acceptSpace();
+        inheader=false;
+        while(acceptPrintableBut('@') || acceptSpace());
+        return true;
+    }
+    return false;
+}
+
+bool FASTAReader::acceptPrintableBut(char ch)
+{
+    if(isprint(current) && current != ch)
+    {
+        if(inheader)
+            this->id_ += current;
+        else
+            this->sequence_ += current;
+        current = fgetc(file_);
+        return true;
+    }
+    return false;
+}
+
+bool FASTAReader::acceptPrintable()
+{
+    if(isprint(current))
+    {        
+        if(inheader)
+            this->id_ += current;
+        else
+            this->sequence_ += current;
+        current = fgetc(file_);
+        return true;
+    }
+    return false;
+}
+
+bool FASTAReader::acceptSpace()
+{
+    if(isspace(current))
+    {
+        current = fgetc(file_);
+        return true;
+    }
+    return false;
 }
